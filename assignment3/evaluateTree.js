@@ -1,5 +1,5 @@
-var heap = {};
-var replaceValue = function(value){
+var heap;
+var mapToValue = function(value){
 	if(typeof(value) != 'number'){ 
 		if(heap[value]){
 			return heap[value];
@@ -10,10 +10,10 @@ var replaceValue = function(value){
 };
 
 var operatorFunctions = {
-	'+' : function(a, b){return replaceValue(a)+replaceValue(b)},
-	'-' : function(a, b){return replaceValue(a)-replaceValue(b)},
-	'*' : function(a, b){return replaceValue(a)*replaceValue(b)},
-	'/' : function(a, b){return replaceValue(a)/replaceValue(b)},
+	'+' : function(a, b){return mapToValue(a)+mapToValue(b)},
+	'-' : function(a, b){return mapToValue(a)-mapToValue(b)},
+	'*' : function(a, b){return mapToValue(a)*mapToValue(b)},
+	'/' : function(a, b){return mapToValue(a)/mapToValue(b)},
 	'=' : function(a, b){heap[a]=b; return b}
 };
 
@@ -34,6 +34,7 @@ var parseTree = function(tree){
 
 function evaluateTree(allTree) {
 	var answer;
+	heap = {};
 	allTree.forEach(function(tree){
 		answer = parseTree(tree);
 	});

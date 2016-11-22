@@ -3,20 +3,20 @@
 /* lexical grammar */
 
 %{
-    var heap = {};
-    var allTrees = [];
-    var evaluateTree = require('./evaluateTree.js');
+    var Node = require(process.cwd() + '/Node.js');
+    var Tree = require(process.cwd() + '/Tree.js');
 %}
 
 %lex
 %%
 \s+                   /* skip whitespace */
 [0-9]+("."[0-9]+)?\b  return 'NUMBER';
-[a-z]                 return 'STRING';
+[a-z]                 return 'VAR';
 "+"                   return '+';
 "-"                   return '-';
 "*"                   return '*';
 "/"                   return '/';
+"^"                   return '^';
 "*"                   return '*';
 "="                   return '=';
 ";"                   return ';';
@@ -29,44 +29,50 @@
 %left '+' '-'
 %left '*' 
 %left '/' 
+%left '^' 
+%left '!' 
 
 %start expressions
 
 %% /* language grammar */
 
 expressions
-    : statement EOF
-        {return console.log(evaluateTree(allTrees));}
+    : statements EOF
+        {return $1;}
     ;
 
-statement
-    : statement assignmentExpression 
-    | statement expression ';'
-        {
-            allTrees.push($2);
-        }
-    |
-    ;
+emptyArray
+    : {$$ = []};
+
+statements
+    : statements assignmentExpression
+        {$1.push($2);}
+    | statements expression ';'
+        {$1.push($2);}
+    | emptyArray
+    ;   
 
 
 assignmentExpression
-    : STRING '=' expression ';'
+    : VAR '=' expression ';'
         {
-            $$ = {parent: '=', left: $1, right: $3};
-            allTrees.push($$);
+            $$ = new Tree('=', new Node($1), $3);
         }
     ;
 
 expression
     : expression '+' expression
-        {$$ = {parent: '+', left: $1, right: $3};}
-    | expression '*' expression
-        {$$ = {parent: '*', left: $1, right: $3};}
-    | expression '/' expression
-        {$$ = {parent: '/', left: $1, right: $3};}
+        {$$ = new Tree($2, $1, $3);}
     | expression '-' expression
-        {$$ = {parent: '-', left: $1, right: $3};}
+        {$$ = new Tree($2, $1, $3);}
+    | expression '*' expression
+        {$$ = new Tree($2, $1, $3);}
+    | expression '/' expression
+        {$$ = new Tree($2, $1, $3);}
+    | expression '^' expression
+        {$$ = new Tree($2, $1, $3);}
     | NUMBER
-        {$$ = +yytext;}
-    |STRING
+        {$$ = new Node(+yytext);}
+    | VAR
+        {$$ = new Node(yytext);}
     ;
