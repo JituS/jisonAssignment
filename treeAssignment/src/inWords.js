@@ -9,6 +9,9 @@ function inHundred(number) {
 }
 
 function toWords(number) {
+	if(typeof(number) != 'number'){
+		throw new ReferenceError(this.parent + ' is not defined');
+	}
 	var stringNumber = ('000000000000' + number).substr(-12).match(/^(\d{3})(\d{3})(\d{3})(\d{3})$/).slice(1);
 	var place = [' billion', ' million', ' thousand', ''];
 	var inWord = '';
