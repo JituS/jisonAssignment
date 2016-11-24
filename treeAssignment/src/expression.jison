@@ -3,7 +3,9 @@
 /* lexical grammar */
 
 %{
-    var Node = require(process.cwd() + '/Node.js');
+    var Node = require(process.cwd() + '/tree/Node.js');
+    var Trees = require(process.cwd() + '/tree/Trees.js');
+    var Tree = require(process.cwd() + '/tree/Tree.js');
 %}
 
 %lex
@@ -18,6 +20,7 @@
 "^"                   return '^';
 "*"                   return '*';
 "="                   return '=';
+"=="                   return '==';
 ";"                   return ';';
 <<EOF>>               return 'EOF';
 
@@ -40,36 +43,36 @@ expressions
         {return $1;}
     ;
 
-emptyArray
-    : {$$ = []};
+trees
+    : {$$ = new Trees()};
 
 statements
     : statements assignmentExpression
-        {$1.push($2);}
+        {$1.addTree($2);}
     | statements expression ';'
-        {$1.push($2);}
-    | emptyArray
+        {$1.addTree($2);}
+    | trees
     ;   
 
 
 assignmentExpression
     : VAR '=' expression ';'
         {
-            $$ = new Node('=', new Node($1), $3);
+            $$ = new Tree('=', new Node($1), $3);
         }
     ;
 
 expression
     : expression '+' expression
-        {$$ = new Node($2, $1, $3);}
+        {$$ = new Tree($2, $1, $3);}
     | expression '-' expression
-        {$$ = new Node($2, $1, $3);}
+        {$$ = new Tree($2, $1, $3);}
     | expression '*' expression
-        {$$ = new Node($2, $1, $3);}
+        {$$ = new Tree($2, $1, $3);}
     | expression '/' expression
-        {$$ = new Node($2, $1, $3);}
+        {$$ = new Tree($2, $1, $3);}
     | expression '^' expression
-        {$$ = new Node($2, $1, $3);}
+        {$$ = new Tree($2, $1, $3);}
     | NUMBER
         {$$ = new Node(+yytext);}
     | VAR
