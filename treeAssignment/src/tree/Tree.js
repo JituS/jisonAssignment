@@ -2,31 +2,26 @@ var toJs = require('../utils/jsConverter.js');
 var evaluater = require('../utils/treeEvaluater.js');
 var inWords = require('../utils/inWords.js');
 
-function Tree(parent, left, right) {
+function Tree(parent, left, right, type) {
 	this.parent = parent;
 	this.left = left;
 	this.right = right;
+	this.type = type;
 }
 
 function represent(){
-	if(this.parent == '=') {
-		var left = this.left.parent;
-		return toJs.initializationExpr(left, this.right.expression());
-	}else{
-		return toJs.consoleLog(this.expression());
-	}
+	return toJs['represent_'+this.type](this);
 }
 
 function evaluate(memory){
-	return (this.parent == '=') 
-		? evaluater.evaluateAssignment(this, memory) 
-		: evaluater.evaluateExpression(this, memory);
+	return evaluater[this.type](this, memory);
 }
 
 function toWords() {
-	var right = this.right ? this.right.toWords():'';
+	var right = this.right ? this.right.toWords() : '';
+	
 	return toJs.putInBracket(this.left.toWords() 
-		+' '+ inWords(this.parent) +' '+ right) ;
+		+ ' ' + inWords(this.parent) +' '+ right) ;
 }
 
 function expression(){

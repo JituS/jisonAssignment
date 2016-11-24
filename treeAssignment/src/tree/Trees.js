@@ -6,12 +6,11 @@ Trees.prototype.addTree = function(tree) {
 	this.trees.push(tree);
 }	
 
-Trees.prototype.evaluate = function() {
-	var memory = {};
+Trees.prototype.evaluate = function(memory) {
 	var memory = this.trees.reduce(function(memory, tree){
 		return tree.evaluate(memory);
 	}, memory);
-	return memory['_'];
+	return memory;
 }
 
 Trees.prototype.representInJs = function() {

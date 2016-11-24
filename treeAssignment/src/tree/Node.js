@@ -7,10 +7,21 @@ function Node(parent) {
 }
 
 function represent(){
-	return toJs.consoleLog(toJs.putInBracket(this.parent));
+	return toJs.represent_simpleExpression(this);
+}
+
+function isBoolean(value){
+	return value == 'true' || value == 'false';
+}
+
+function parseBoolean(value){
+	return (value == 'true') ? true : false;
 }
 
 function evaluate(memory){
+	if(isBoolean(this.parent)){
+		return parseBoolean(this.parent);
+	}
 	memory['_'] = evaluater.replaceValue(this.parent, memory);
 	return memory;
 }

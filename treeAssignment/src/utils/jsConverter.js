@@ -11,22 +11,38 @@ var operations = {
 	'*' : function (left, right){ return putInBracket(left.expression() + ' * ' + right.expression()); },
 	'/' : function (left, right){ return putInBracket(left.expression() + ' / ' + right.expression()); },
 	'^' : function (left, right){ return putInBracket(mathPow(left.expression(), right.expression())); },
-	'-' : function (left, right){ return putInBracket(left.expression() - right.expression()); },
-	'!' : function (left, right){ return putInBracket('fact(' + left.expression() + ')'); }
+	'-' : function (left, right){ return putInBracket(left.expression() + ' - ' + right.expression()); },
+	'!' : function (left, right){ return putInBracket('fact(' + left.expression() + ')'); },
+	'>' : function (left, right){ return putInBracket(left.expression() + ' > ' +  right.expression()); },
+	'<' : function (left, right){ return putInBracket(left.expression() + ' < ' +  right.expression()); }
 };
 
+function representIfBlock(tree){
+	var condition = tree.parent.expression();
+	var ifBlock = tree.left.representInJs();
+	return 'if ' + condition + '{\n\t' +  ifBlock + '\n}';
+}
+function representElseBlock(tree){
+	return (tree.right) 
+		? 'else' + '{\n\t' +  tree.right.representInJs() + '\n}\n'
+		: '';
+}
+
 var toJs = {
-	consoleLog: function(expr){
-		return 'console.log' + expr + ';';
+	represent_simpleExpression: function(expr){
+		return 'console.log(' + expr.expression() + ');';
 	},
-	initializationExpr: function(variable, expression){
-		return 'var ' + variable + ' = ' +  expression + ';';
+	represent_assignmentExpression: function(tree){
+		var variable = tree.left.parent;
+		var right = tree.right.expression()
+		return 'var ' + variable + ' = ' +  right + ';';
+	},
+	represent_ifCondition: function(tree){
+		var ifBlock = representIfBlock(tree);
+		var elseBlock = representElseBlock(tree);
+		return ifBlock + elseBlock;
 	},
 	putInBracket: putInBracket,
-	assignmentExpression: function(tree){
-		var left = tree.left.parent;
-		return toJs.initializationExpr(left, tree.right || tree.right.expression());
-	},
 	operations: operations
 };
 
