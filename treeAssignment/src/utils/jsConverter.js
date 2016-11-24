@@ -1,12 +1,18 @@
 var mathPow = function(left, right){
 	return 'Math.pow(' + left + ', ' + right + ')' ;
 }
+
+function putInBracket(expr) {
+	return '(' + expr + ')';
+}
+
 var operations = {
-	'+' : function (left, right){ return toJs.putInBracket(left + ' + ' + right); },
-	'*' : function (left, right){ return toJs.putInBracket(left + ' * ' + right); },
-	'/' : function (left, right){ return left + ' / ' + right; },
-	'^' : function (left, right){ return toJs.putInBracket(mathPow(left, right)); },
-	'-' : function (left, right){ return left - right; },
+	'+' : function (left, right){ return putInBracket(left.expression() + ' + ' + right.expression()); },
+	'*' : function (left, right){ return putInBracket(left.expression() + ' * ' + right.expression()); },
+	'/' : function (left, right){ return putInBracket(left.expression() + ' / ' + right.expression()); },
+	'^' : function (left, right){ return putInBracket(mathPow(left.expression(), right.expression())); },
+	'-' : function (left, right){ return putInBracket(left.expression() - right.expression()); },
+	'!' : function (left, right){ return putInBracket('fact(' + left.expression() + ')'); }
 };
 
 var toJs = {
@@ -16,12 +22,10 @@ var toJs = {
 	initializationExpr: function(variable, expression){
 		return 'var ' + variable + ' = ' +  expression + ';';
 	},
-	putInBracket: function(expression) {
-		return '(' + expression + ')';
-	},
+	putInBracket: putInBracket,
 	assignmentExpression: function(tree){
 		var left = tree.left.parent;
-		return toJs.initializationExpr(left, tree.right.expression());
+		return toJs.initializationExpr(left, tree.right || tree.right.expression());
 	},
 	operations: operations
 };

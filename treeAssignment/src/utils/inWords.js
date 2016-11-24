@@ -1,6 +1,6 @@
 var a = ['',' one',' two',' three',' four',' five',' six',' seven',' eight',' nine',' ten',' eleven',' twelve',' thirteen',' fourteen',' fifteen',' sixteen',' seventeen',' eighteen',' nineteen'];
 var b = ['', '', ' twenty',' thirty',' forty',' fifty',' sixty',' seventy',' eighty',' ninety'];
-var symbols = {'+': 'plus', '*': 'times', '/': 'divideBy', '^': 'to the power', '-': 'minus', '=': 'equals-to'};
+var symbols = {'+': 'plus', '*': 'times', '/': 'divideBy', '^': 'to the power', '-': 'minus', '=': 'equals-to', '!': 'factorial'};
 
 function inHundred(number) {
 	var word ='';

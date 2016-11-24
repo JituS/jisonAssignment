@@ -20,7 +20,7 @@
 "^"                   return '^';
 "*"                   return '*';
 "="                   return '=';
-"=="                   return '==';
+"!"                   return '!';
 ";"                   return ';';
 <<EOF>>               return 'EOF';
 
@@ -73,6 +73,8 @@ expression
         {$$ = new Tree($2, $1, $3);}
     | expression '^' expression
         {$$ = new Tree($2, $1, $3);}
+    | expression '!'
+        {$$ = new Tree($2, $1);}
     | NUMBER
         {$$ = new Node(+yytext);}
     | VAR

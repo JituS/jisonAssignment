@@ -63,7 +63,7 @@ describe('Node', function(){
 		var tree2 = new Tree('+', new Node(2), new Node(3));
 		var tree = new Tree('*', tree1, tree2);
 		var actual = tree.toWords();
-		var expected = '(( two *  two) * ( two +  three))';
+		var expected = '(( two times  two) times ( two plus  three))';
 		assert.equal(expected, actual);	
 	});
 	it('should represent in js consoleLog', function() {
@@ -72,6 +72,14 @@ describe('Node', function(){
 		var tree = new Tree('+', node1, node2);
 		var actual = tree.represent();
 		var expected = 'console.log(1 + 2);';
+		assert.equal(expected, actual);	
+	});
+	it('should represent in js factorial', function() {
+		var node1 = new Node(1);
+		var node2 = new Node(2);
+		var tree = new Tree('!', node1);
+		var actual = tree.represent();
+		var expected = 'console.log(fact(1));';
 		assert.equal(expected, actual);	
 	});
 })

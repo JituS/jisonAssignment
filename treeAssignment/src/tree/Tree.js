@@ -24,14 +24,13 @@ function evaluate(memory){
 }
 
 function toWords() {
+	var right = this.right ? this.right.toWords():'';
 	return toJs.putInBracket(this.left.toWords() 
-		+' '+ inWords(this.parent) +' '+ this.right.toWords()) ;
+		+' '+ inWords(this.parent) +' '+ right) ;
 }
 
 function expression(){
-	var left = this.left.expression();
-	var right = this.right.expression();
-	var expression = toJs.operations[this.parent](left, right);
+	var expression = toJs.operations[this.parent](this.left, this.right);
 	return expression;
 }
 
