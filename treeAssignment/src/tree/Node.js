@@ -20,9 +20,11 @@ function parseBoolean(value){
 
 function evaluate(memory){
 	if(isBoolean(this.parent)){
-		return parseBoolean(this.parent);
+		memory.add('_', parseBoolean(this.parent));
+		return memory;
 	}
-	memory['_'] = evaluater.replaceValue(this.parent, memory);
+	var result = evaluater.replaceValue(this.parent, memory);
+	memory.add('_', result);
 	return memory;
 }
 

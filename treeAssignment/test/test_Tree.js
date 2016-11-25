@@ -1,5 +1,6 @@
 var Node = require('../src/tree/Node.js');
 var Tree = require('../src/tree/Tree.js');
+var Memory = require('../src/tree/Memory.js');
 var assert = require('chai').assert;
 
 var treeTypes = ['simpleExpression', 'assignmentExpression', 'ifCondition'];
@@ -8,38 +9,38 @@ describe('Tree', function(){
 
 	it('should evaluate itself', function() {
 		var node = new Node(1);
-		var actual = node.evaluate(new Object());
-		assert.equal(1, actual['_']);
+		var actual = node.evaluate(new Memory());
+		assert.equal(1, actual.get('_'));
 	});
 
 	it('should evaluate the tree', function() {
 		var tree = new Tree('*', new Node(2), new Node(3), 'simpleExpression');
-		var actual = tree.evaluate(new Object());
-		assert.equal(6, actual['_']);
+		var actual = tree.evaluate(new Memory());
+		assert.equal(6, actual.get('_'));
 	});
 
 	it('should evaluate the complex tree', function() {
 		var tree1 = new Tree('*', new Node(2), new Node(3), 'simpleExpression');
 		var tree2 = new Tree('+', new Node(2), new Node(3), 'simpleExpression');
 		var tree = new Tree('*', tree1, tree2, 'simpleExpression');
-		var actual = tree.evaluate(new Object());
-		assert.equal(30, actual['_']);
+		var actual = tree.evaluate(new Memory());
+		assert.equal(30, actual.get('_'));
 	});
 
 	it('should evaluate all expressions', function() {
 		var tree1 = new Tree('-', new Node(1), new Node(2), 'simpleExpression');
 		var tree2 = new Tree('-', new Node(2), new Node(3), 'simpleExpression');
 		var tree = new Tree('*', tree1, tree2, 'simpleExpression');
-		var memory = new Object();
+		var memory = new Memory();
 		var actual = tree.evaluate(memory);
-		assert.equal(1, actual['_']);
+		assert.equal(1, actual.get('_'));
 	});
 
 	it('should strore assignment variables', function() {
 		var tree = new Tree('=', new Node('x'), new Node(2), 'assignmentExpression');
-		var memory = new Object();
+		var memory = new Memory();
 		var actual = tree.evaluate(memory);
-		assert.equal(2, actual['x']);
+		assert.equal(2, actual.get('x'));
 	});
 
 	it('should store assignment variables which has expression', function() {
@@ -47,9 +48,9 @@ describe('Tree', function(){
 		var tree2 = new Tree('+', new Node(2), new Node(3), 'simpleExpression');
 		var tree = new Tree('*', tree1, tree2, 'simpleExpression');
 		var assignment = new Tree('=', new Node('x'), tree, 'assignmentExpression');
-		var memory = new Object();
+		var memory = new Memory();
 		var actual = assignment.evaluate(memory);
-		assert.equal(20, actual['x']);
+		assert.equal(20, actual.get('x'));
 	});
 
 	it('should represent in js code', function() {
@@ -99,14 +100,14 @@ describe('Tree', function(){
 		var node1 = new Node(1);
 		var node2 = new Node(2);
 		var tree = new Tree(new Tree('<',node1,node2, 'condition'), new Node(3), '','ifCondition');
-		var actual = tree.evaluate(new Object())['_'];
-		assert.equal(3, actual);	
+		var actual = tree.evaluate(new Memory());
+		assert.equal(3, actual.get('_'));	
 	});
 	it('should evaluate ifelse conditions', function() {
 		var node1 = new Node(1);
 		var node2 = new Node(2);
 		var tree = new Tree(new Tree('>',node1,node2, 'condition'), new Node(3), new Node(4),'ifCondition');
-		var actual = tree.evaluate(new Object())['_'];
+		var actual = tree.evaluate(new Memory()).get('_');
 		assert.equal(4, actual);	
 	});
 })
