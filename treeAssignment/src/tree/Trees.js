@@ -4,6 +4,7 @@ function Trees() {
 
 Trees.prototype.addTree = function(tree) {
 	this.trees.push(tree);
+	return this;
 }	
 
 Trees.prototype.evaluate = function(memory) {

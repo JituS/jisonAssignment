@@ -4,7 +4,7 @@ var assert = require('chai').assert;
 
 var treeTypes = ['simpleExpression', 'assignmentExpression', 'ifCondition'];
 
-describe('Node', function(){
+describe('Tree', function(){
 
 	it('should evaluate itself', function() {
 		var node = new Node(1);
@@ -78,7 +78,7 @@ describe('Node', function(){
 		assert.equal(expected, actual);	
 	});
 
-	it('should represent in js consoleLog', function() {
+	it('should represent with js consoleLog', function() {
 		var node1 = new Node(1);
 		var node2 = new Node(2);
 		var tree = new Tree('+', node1, node2, 'simpleExpression');
@@ -87,7 +87,7 @@ describe('Node', function(){
 		assert.equal(expected, actual);	
 	});
 
-	it('should represent in js factorial', function() {
+	it('should represent with js factorial', function() {
 		var node1 = new Node(1);
 		var node2 = new Node(2);
 		var tree = new Tree('!', node1, '','simpleExpression');
@@ -98,8 +98,15 @@ describe('Node', function(){
 	it('should evaluate if conditions', function() {
 		var node1 = new Node(1);
 		var node2 = new Node(2);
-		var tree = new Tree(new Tree('>',node1,node2, 'simpleExpression'), new Node(3), '','ifCondition');
+		var tree = new Tree(new Tree('<',node1,node2, 'condition'), new Node(3), '','ifCondition');
 		var actual = tree.evaluate(new Object())['_'];
 		assert.equal(3, actual);	
+	});
+	it('should evaluate ifelse conditions', function() {
+		var node1 = new Node(1);
+		var node2 = new Node(2);
+		var tree = new Tree(new Tree('>',node1,node2, 'condition'), new Node(3), new Node(4),'ifCondition');
+		var actual = tree.evaluate(new Object())['_'];
+		assert.equal(4, actual);	
 	});
 })
