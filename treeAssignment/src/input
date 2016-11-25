@@ -1,13 +1,5 @@
-a=10;
-b=20;
-if true{
-	a=100;
-	c=200;
-	if false{
-		c=300;
-	}else{
-		c=400;
-		d=1;
-	}
-	c;
+a=1;
+loop -> (a<10){
+	put a;
+	a=a+1;
 }

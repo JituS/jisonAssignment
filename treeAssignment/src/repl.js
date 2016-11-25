@@ -1,5 +1,6 @@
 const readline = require('readline');
 var jison = require('jison');
+var Memory = require('./tree/Memory.js');
 var fs = require('fs');
 var grammer = fs.readFileSync('expression.jison', 'utf8');
 var parser = new jison.Parser(grammer);
@@ -10,7 +11,7 @@ const rl = readline.createInterface({
   prompt: '>> '
 });
 
-var memory = new Object();
+var memory = new Memory();
 process.stdout.write('>> ');
 
 rl.on('line', (input) => {
@@ -18,7 +19,6 @@ rl.on('line', (input) => {
 		var trees = parser.parse(input);
 		try{
 			memory = trees.evaluate(memory);
-			console.log('>> '+memory['_']);
 		}catch(e){
 			console.log(e);
 		}

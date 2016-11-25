@@ -1,6 +1,15 @@
 var toJs = require('../utils/jsConverter.js');
-var evaluater = require('../utils/treeEvaluater.js');
 var inWords = require('../utils/inWords.js');
+
+function replaceValue(value, memory) {
+	if(typeof(value) == 'string'){ 
+		if(memory.get(value)){
+			return memory.get(value);
+		}
+		throw new ReferenceError(value + ' is not defined');
+	}
+	return value;
+}
 
 function Node(parent) {
 	this.parent = parent;
@@ -23,7 +32,7 @@ function evaluate(memory){
 		memory.add('_', parseBoolean(this.parent));
 		return memory;
 	}
-	var result = evaluater.replaceValue(this.parent, memory);
+	var result = replaceValue(this.parent, memory);
 	memory.add('_', result);
 	return memory;
 }

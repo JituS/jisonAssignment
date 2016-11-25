@@ -12,23 +12,31 @@
 %%
 \s+                   /* skip whitespace */
 [0-9]+("."[0-9]+)?\b  return 'NUMBER';
-'if'                  return 'if';
-'else'                return 'else';
+'?'                   return '?';
+':'                   return ':';
+"->"                  return '->';
+'loop'                return 'loop';
+'put'                 return 'put';
 'true'                return 'true';
 'false'               return 'false';
 [a-z]                 return 'VAR';
 "+"                   return '+';
 "-"                   return '-';
 "*"                   return '*';
+"%"                   return '%';
 "/"                   return '/';
 "^"                   return '^';
+"=="                  return '==';
+"<="                  return '<=';
+">="                  return '>=';
 "*"                   return '*';
 "="                   return '=';
 ">"                   return '>';
 "<"                   return '<';
-"=="                  return '==';
 "{"                   return '{';
 "}"                   return '}';
+"("                   return '(';
+")"                   return ')';
 "!"                   return '!';
 ";"                   return ';';
 <<EOF>>               return 'EOF';
@@ -40,6 +48,7 @@
 %left '+' '-'
 %left '*' 
 %left '/' 
+%left '%' 
 %left '^' 
 %left '!' 
 
@@ -64,8 +73,20 @@ statements
         {$1.addTree($2);}
     | statements ifCondition
         {$1.addTree($2);}
+    | statements print ';'
+        {$1.addTree($2);}
+    | statements loops
+        {$1.addTree($2);}
     | trees
     ;   
+
+loops
+    : 'loop' '->' '(' condition ')' '{' statements '}'
+        {$$ = new Tree($4, $7, '', 'loop');};
+
+print  
+    : 'put' expression
+        {$$ = new Tree($2, ' ',' ','print');};
 
 boolean
     : 'true'
@@ -76,16 +97,22 @@ condition
         {$$ = new Tree($2, $1, $3, 'condition');}
     | expression '<' expression
         {$$ = new Tree($2, $1, $3, 'condition');}
+    | expression '==' expression
+        {$$ = new Tree($2, $1, $3, 'condition');}
+    | expression '<=' expression
+        {$$ = new Tree($2, $1, $3, 'condition');}
+    | expression '>=' expression
+        {$$ = new Tree($2, $1, $3, 'condition');}
     | boolean
         {$$ = new Node($1);};
 
 ifCondition 
-    : 'if' condition '{' statements '}'
-        {$$ = new Tree($2, $4, '','ifCondition');};
+    : '?' '->' '(' condition ')' '{' statements '}'
+        {$$ = new Tree($4, $7, '','ifCondition');};
 
 
 ifElseCondition 
-    : 'if' condition '{' statements '}' 'else' '{' statements '}'
+    : '?' condition '{' statements '}' ':' '{' statements '}'
         {$$ = new Tree($2, $4, $8,'ifCondition');};
 
 
@@ -103,6 +130,8 @@ expression
     | expression '-' expression
         {$$ = new Tree($2, $1, $3, 'simpleExpression');}
     | expression '*' expression
+        {$$ = new Tree($2, $1, $3, 'simpleExpression');}
+    | expression '%' expression
         {$$ = new Tree($2, $1, $3, 'simpleExpression');}
     | expression '/' expression
         {$$ = new Tree($2, $1, $3, 'simpleExpression');}
